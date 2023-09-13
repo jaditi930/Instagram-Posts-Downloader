@@ -11,6 +11,7 @@ def downloadSpecific(shortcode,download_dir):
 #@ public and private
 #@download profile pic
 def download_profile(username):
+    print(username)
     ig.download_profile(username , profile_pic_only=True)
 
 # @public accounts only
@@ -24,6 +25,7 @@ def downloadAllPosts(username):
 # requires login
 # @ downloads stories of public accounts
 
+# download_profile("jaditi930")
 
 # def downloadStories(username,password):
 #     profile = ig.check_profile_id(username)
