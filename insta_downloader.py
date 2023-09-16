@@ -1,17 +1,26 @@
 import instaloader
-
+import threading
 ig = instaloader.Instaloader()
+
 
 # @public accounts only
 # @downloads posts,videos,igtv and reels
+def dp(username):
+    t1 = threading.Thread(target=download_profile, args=(username,))
+    t1.start()
+    # t1.join()
+
+def ds(shortcode,download_dir="reels"):
+    t1 = threading.Thread(target=downloadSpecific, args=(shortcode,download_dir,))
+    t1.start()
+
 def downloadSpecific(shortcode,download_dir):
-    post = instaloader.Post.from_shortcode(ig.context,"CtwnoWhqv7N")
-    ig.download_post(post,target="reels")
+    post = instaloader.Post.from_shortcode(ig.context,shortcode)
+    ig.download_post(post,target=download_dir)
 
 #@ public and private
 #@download profile pic
 def download_profile(username):
-    print(username)
     ig.download_profile(username , profile_pic_only=True)
 
 # @public accounts only
