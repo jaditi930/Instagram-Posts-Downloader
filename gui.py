@@ -15,30 +15,39 @@ def download():
         item=queue.pop()
         user_input=item[0]
         type=item[1]
-        print(user_input,type)
+        tries=0
+        while tries<3:
+            try:
+            # to download profile picture
+                if type==0:
+                    ig.download_profile(user_input , profile_pic_only=True)
+                    break
 
-        try:
-        # to download profile picture
-            if type==0:
-                ig.download_profile(user_input , profile_pic_only=True)
+                # to download particular post,video or reel
+                elif type==1:
+                    shortcode=user_input.split("/")[4]
+                    post = instaloader.Post.from_shortcode(ig.context,shortcode)
+                    ig.download_post(post,target="downloads")
+                    break
 
-            # to download particular post,video or reel
-            elif type==1:
-                shortcode=user_input.split("/")[4]
-                post = instaloader.Post.from_shortcode(ig.context,shortcode)
-                ig.download_post(post,target="downloads")
+                # to download all posts of a user
+                else:
+                    profile = instaloader.Profile.from_username(ig.context,user_input)
+                    for post in profile.get_posts():
+                        ig.download_post(post, target=profile.username)
+                    break
 
-            # to download all posts of a user
-            else:
-                profile = instaloader.Profile.from_username(ig.context,user_input)
+            except :
+                tries+=1
+                print("failed")
+                dwld_label.config(text="Downloading failed. Trying again...")
+                sleep(1)
 
-                for post in profile.get_posts():
-                    ig.download_post(post, target=profile.username)
-
-            dwld_label.config(text="Downloading has completed successfully ...")
-
-        except :
-            dwld_label.config(text="Downloading failed ...")
+        print(tries)
+        if tries==3:
+            dwld_label.config(text="Sorry could not download the file. Please check username/url or try again later.")
+        else:
+            dwld_label.config(text="Downloaded successfully ...")
 
     sleep(1)
     dwld_label.config(text="Ready to Download ...")
