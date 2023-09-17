@@ -33,7 +33,6 @@ def download():
                 profile = instaloader.Profile.from_username(ig.context,user_input)
 
                 for post in profile.get_posts():
-                    print(post.title)
                     ig.download_post(post, target=profile.username)
 
             dwld_label.config(text="Downloading has completed successfully ...")
@@ -46,8 +45,11 @@ def download():
     downloading=0
 
 
-def start_download():
-
+def start_download(cancel=0):
+    global queue
+    if cancel==1:
+        queue=[]
+        return
     queue.append((Userinput.get(),Type.get()))
     if downloading==0:
         t1 = threading.Thread(target=download, args=())
@@ -107,8 +109,10 @@ entry.pack(in_=f2,side=RIGHT,anchor=W)
 f3=Frame()
 f3.pack()
 
-dwld_btn=Button(text="DOWNLOAD",bg="light green",padx=5,pady=5,font=("Helventica","15"),width=20,command=start_download)
-dwld_btn.pack(in_=f3)
+dwld_btn=Button(text="START DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=start_download)
+dwld_btn.pack(in_=f3,side=LEFT)
+cancel_btn=Button(text="CANCEL DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=lambda:start_download(1))
+cancel_btn.pack(in_=f3,side=LEFT)
 
 f4=Frame()
 f4.pack(side=BOTTOM,anchor="sw")
