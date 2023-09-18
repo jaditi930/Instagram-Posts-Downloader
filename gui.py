@@ -13,12 +13,25 @@ stop=0
 def download():
     global downloading
     downloading=1
+
     while len(queue)>0:
+
         item=queue.pop()
         user_input=item[0]
         type=item[1]
         tries=0
+
+        if type==0:
+            dwld_label.config(text=f"Downloading profile pic for {user_input} ...")
+        
+        elif type==1:
+            dwld_label.config(text=f"Downloading post from url {user_input} ...")
+
+        else:
+            dwld_label.config(text=f"Downloading all posts for {user_input} ...")
+
         while tries<3:
+
             try:
             # to download profile picture
                 if type==0:
@@ -41,15 +54,16 @@ def download():
 
             except :
                 tries+=1
-                print("failed")
-                dwld_label.config(text="Downloading failed. Trying again...")
-                sleep(1)
+                # print("failed")
 
-        print(tries)
+        # print(tries)
+        
         if tries==3:
             dwld_label.config(text="Sorry could not download the file. Please check username/url or try again later.")
         else:
             dwld_label.config(text="Downloaded successfully ...")
+        
+        sleep(1)
 
     sleep(1)
     dwld_label.config(text="Ready to Download ...")
@@ -106,7 +120,7 @@ def start_download(user_input,type):
     if downloading==0:
         t1 = threading.Thread(target=download, args=())
         t1.start()
-        dwld_label.config(text="Downloading has started ...")
+
 
 def cancel_download():
     global queue
