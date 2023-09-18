@@ -53,13 +53,29 @@ def download():
     dwld_label.config(text="Ready to Download ...")
     downloading=0
 
+def check_clipboard():
+    while True:
+        try:
+            link=Tk().clipboard_get()
+        except:
+            link=""
+        # print(link)
+        if link!="":
+            queue.append((link,1))
+            Tk().clipboard_clear()
+            start_download()
 
 def start_download(cancel=0):
     global queue
+
     if cancel==1:
         queue=[]
         return
-    queue.append((Userinput.get(),Type.get()))
+    
+    user_input=Userinput.get()
+    if user_input!="":
+        queue.append((user_input,Type.get()))
+
     if downloading==0:
         t1 = threading.Thread(target=download, args=())
         t1.start()
@@ -127,5 +143,10 @@ f4=Frame()
 f4.pack(side=BOTTOM,anchor="sw")
 dwld_label=Label(text="Ready to Download ...",font=("Helventica", "15"),width=100,bg="sky blue")
 dwld_label.pack(in_=f4,ipadx=5,ipady=10)
- 
+
+t2=threading.Thread(target=check_clipboard)
+t2.start()
+
 window.mainloop()
+
+
