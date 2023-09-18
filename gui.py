@@ -67,6 +67,7 @@ def start_download_from_clipboard():
     global stop
 
     if Enable.get()==1:
+        stop=0
         t1=threading.Thread(target=check_clipboard)
         t1.start()
     else:
@@ -84,24 +85,16 @@ def check_clipboard():
             link=""
         # print(link)
         if link!="" and check_valid(link):
-            queue.append((link,1))
+            print(link)
             Tk().clipboard_clear()
-            start_download()
+            start_download(link,1)
 
         # checks clipboard after every 1 sec
         sleep(1)
 
     
-def start_download(cancel=0):
+def start_download(user_input,type):
     global queue
-
-    # cancel download
-    if cancel==1:
-        queue=[]
-        return
-    
-    user_input=Userinput.get()
-    type=Type.get()
 
     # check if link is valid
     if type==1 and (not check_valid(user_input)):
@@ -115,7 +108,9 @@ def start_download(cancel=0):
         t1.start()
         dwld_label.config(text="Downloading has started ...")
 
-    Userinput.set("")
+def cancel_download():
+    global queue
+    queue=[]
 
 
 def update_gui(type):
@@ -171,9 +166,9 @@ entry.pack(in_=f2,side=RIGHT,anchor=W)
 f3=Frame()
 f3.pack()
 
-dwld_btn=Button(text="START DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=start_download)
+dwld_btn=Button(text="START DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=lambda:start_download(Userinput.get(),Type.get()))
 dwld_btn.pack(in_=f3,side=LEFT)
-cancel_btn=Button(text="CANCEL DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=lambda:start_download(1))
+cancel_btn=Button(text="CANCEL DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=cancel_download)
 cancel_btn.pack(in_=f3,side=LEFT)
 
 f4=Frame()
