@@ -4,9 +4,11 @@ ig = instaloader.Instaloader()
 from tkinter import *
 from time import sleep
 
+
 #https://www.instagram.com/reel/CxPwnKxMcvg/?utm_source=ig_web_copy_link&igshid=MzRlODBiNWFlZA==
 downloading=0 
 queue=[]
+stop=0
 
 def download():
     global downloading
@@ -53,28 +55,60 @@ def download():
     dwld_label.config(text="Ready to Download ...")
     downloading=0
 
+def check_valid(link):
+
+    if link=="" or link.find('instagram')==-1:
+        dwld_label.config(text="Please enter a valid link ...")
+        return False
+    
+    return True
+
+def start_download_from_clipboard():
+    global stop
+
+    if Enable.get()==1:
+        t1=threading.Thread(target=check_clipboard)
+        t1.start()
+    else:
+        stop=1
+
 def check_clipboard():
+    global stop
+
     while True:
+        if stop==1:
+            break
         try:
             link=Tk().clipboard_get()
         except:
             link=""
         # print(link)
-        if link!="":
+        if link!="" and check_valid(link):
             queue.append((link,1))
             Tk().clipboard_clear()
             start_download()
 
+        # checks clipboard after every 1 sec
+        sleep(1)
+
+    
 def start_download(cancel=0):
     global queue
 
+    # cancel download
     if cancel==1:
         queue=[]
         return
     
     user_input=Userinput.get()
-    if user_input!="":
-        queue.append((user_input,Type.get()))
+    type=Type.get()
+
+    # check if link is valid
+    if type==1 and (not check_valid(user_input)):
+        return
+
+    # otherwise, append to download queue
+    queue.append((user_input,type))
 
     if downloading==0:
         t1 = threading.Thread(target=download, args=())
@@ -94,14 +128,17 @@ def update_gui(type):
     else:
         label.config(text="Enter username:")
 
+
+
 window=Tk()
-window.geometry("944x634")
-window.minsize(944,634)
-window.maxsize(944,634)
+window.geometry("944x500")
+window.minsize(944,500)
+window.maxsize(944,500)
 window.title("Instagram Posts Downloader")
 
 Userinput=StringVar()
 Type=IntVar()
+Enable=IntVar()
 
 text=Label(text="INSTAGRAM POSTS DOWNLOADER",font=("Helventica", "25", "bold"),fg="black",padx=10,pady=20)
 text.pack()
@@ -141,11 +178,13 @@ cancel_btn.pack(in_=f3,side=LEFT)
 
 f4=Frame()
 f4.pack(side=BOTTOM,anchor="sw")
-dwld_label=Label(text="Ready to Download ...",font=("Helventica", "15"),width=100,bg="sky blue")
-dwld_label.pack(in_=f4,ipadx=5,ipady=10)
 
-t2=threading.Thread(target=check_clipboard)
-t2.start()
+
+cbox=Checkbutton(text="Enable auto download reel when there is link in clipboard",font=("Helventica","15"),variable=Enable,command=start_download_from_clipboard)
+cbox.pack(in_=f4,ipadx=150,ipady=20,side=TOP)
+
+dwld_label=Label(text="Ready to Download ...",font=("Helventica", "15"),width=100,bg="sky blue",anchor="w",padx=50)
+dwld_label.pack(in_=f4,ipadx=20,ipady=10,side=BOTTOM)
 
 window.mainloop()
 
