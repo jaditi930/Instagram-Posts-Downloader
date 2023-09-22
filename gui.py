@@ -116,7 +116,6 @@ def start_download(user_input,type):
 
     # otherwise, append to download queue
     queue.append((user_input,type))
-
     if downloading==0:
         t1 = threading.Thread(target=download, args=())
         t1.start()
@@ -138,11 +137,9 @@ def update_gui(type):
         label.config(text="Enter username:")
 
 
-
 window=Tk()
 window.geometry("944x500")
 window.minsize(944,500)
-window.maxsize(944,500)
 window.title("Instagram Posts Downloader")
 
 Userinput=StringVar()
@@ -157,13 +154,13 @@ choice_list=["DOWNLOAD PROFILE PHOTO","DOWNLOAD A POST, VIDEO OR REEL","DOWNLOAD
 f1=Frame()
 f1.pack()
 
-b1=Button(text=choice_list[0],font=("Helventica", "12", "bold"),padx=5,pady=5,command=lambda:update_gui(0))
-b2=Button(text=choice_list[1],font=("Helventica", "12", "bold"),padx=5,pady=5,command=lambda:update_gui(1))
-b3=Button(text=choice_list[2],font=("Helventica", "12", "bold"),padx=5,pady=5,command=lambda:update_gui(2))
+b1=Button(f1,text=choice_list[0],font=("Helventica", "12", "bold"),padx=5,pady=5,command=lambda:update_gui(0))
+b2=Button(f1,text=choice_list[1],font=("Helventica", "12", "bold"),padx=5,pady=5,command=lambda:update_gui(1))
+b3=Button(f1,text=choice_list[2],font=("Helventica", "12", "bold"),padx=5,pady=5,command=lambda:update_gui(2))
 
-b1.pack(in_=f1, side=LEFT)
-b2.pack(in_=f1, side=LEFT)
-b3.pack(in_=f1, side=LEFT)
+b1.pack(side=LEFT)
+b2.pack(side=LEFT)
+b3.pack(side=LEFT)
 
 title=Label(text=choice_list[Type.get()],font=("Helventica", "16","bold"),padx=15,pady=15,width=100)
 title.pack()
@@ -171,29 +168,30 @@ title.pack()
 f2=Frame()
 f2.pack(ipadx=20,ipady=20)
 
-label=Label(text="Enter username:",font=("Helventica", "15"))
-entry=Entry(font=("Helventica", "15"),width=40,textvariable=Userinput)
+label=Label(f2,text="Enter username:",font=("Helventica", "15"))
+entry=Entry(f2,font=("Helventica", "15"),width=40,textvariable=Userinput)
 
-label.pack(in_=f2,side=LEFT,anchor=W)
-entry.pack(in_=f2,side=RIGHT,anchor=W)
+label.pack(side=LEFT)
+entry.pack(side=RIGHT)
 
 f3=Frame()
 f3.pack()
 
-dwld_btn=Button(text="START DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=lambda:start_download(Userinput.get(),Type.get()))
-dwld_btn.pack(in_=f3,side=LEFT)
-cancel_btn=Button(text="CANCEL DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=cancel_download)
-cancel_btn.pack(in_=f3,side=LEFT)
+dwld_btn=Button(f3,text="START DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=lambda:start_download(Userinput.get(),Type.get()))
+dwld_btn.pack(side=LEFT)
+
+cancel_btn=Button(f3,text="CANCEL DOWNLOAD",padx=5,pady=5,font=("Helventica","12","bold"),width=20,command=cancel_download)
+cancel_btn.pack(side=RIGHT)
 
 f4=Frame()
-f4.pack(side=BOTTOM,anchor="sw")
+f4.pack(side=BOTTOM)
 
 
-cbox=Checkbutton(text="Enable auto download reel when there is link in clipboard",font=("Helventica","15"),variable=Enable,command=start_download_from_clipboard)
-cbox.pack(in_=f4,ipadx=150,ipady=20,side=TOP)
+cbox=Checkbutton(f4,text="Enable auto download reel when there is link in clipboard",font=("Helventica","15"),variable=Enable,command=start_download_from_clipboard)
+cbox.pack(ipadx=150,ipady=20,side=TOP)
 
-dwld_label=Label(text="Ready to Download ...",font=("Helventica", "15"),width=100,bg="sky blue",anchor="w",padx=50)
-dwld_label.pack(in_=f4,ipadx=20,ipady=10,side=BOTTOM)
+dwld_label=Label(f4,text="Ready to Download ...",font=("Helventica", "15"),width=135,bg="sky blue",anchor="w",padx=50)
+dwld_label.pack(ipadx=20,ipady=10,side=BOTTOM)
 
 window.mainloop()
 
